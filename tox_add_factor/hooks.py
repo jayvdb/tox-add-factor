@@ -36,7 +36,7 @@ def tox_addoption(parser):
     parser.add_argument(
         "--prepend-ostype-factor",
         action="store_true",
-        help="Prepend OS type to factors, such as linux, osx, windows.",
+        help="Prepend OS type to factors, such as linux, macos, windows.",
     )
 
 
