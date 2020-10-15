@@ -36,7 +36,13 @@ def tox_addoption(parser):
     parser.add_argument(
         "--prepend-ostype-factor",
         action="store_true",
-        help="Prepend OS type to factors, such as linux, osx, windows.",
+        help="Prepend OS type to factors, such as linux, macos, windows.",
+    )
+
+    parser.add_argument(
+        "--prepend-username-factor",
+        action="store_true",
+        help="Prepend username to factors.",
     )
 
 
@@ -75,6 +81,17 @@ def tox_configure(config):
             config.option.prepend_factor = [_get_os_type().lower()]
         else:
             config.option.prepend_factor.insert(0, _get_os_type().lower())
+
+    if config.option.prepend_username_factor:
+        import getpass  # noqa
+        username = getpass.getuser()
+        if username:
+            username = username.lower()
+
+        if not config.option.prepend_factor:
+            config.option.prepend_factor = [username]
+        else:
+            config.option.prepend_factor.insert(0, username)
 
     if config.option.prepend_factor:
         add_factors(config, config.option.prepend_factor, position=BEFORE)
