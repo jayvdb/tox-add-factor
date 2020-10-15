@@ -1,6 +1,8 @@
 """Tox hook implementations."""
 from __future__ import print_function
 
+import os
+
 import tox
 
 try:
@@ -44,6 +46,12 @@ def tox_addoption(parser):
         help="Prepend username to factors.",
     )
 
+    parser.add_argument(
+        "--add-ci-factor",
+        action="store_true",
+        help="Add CI factors if environment variable is set, such as appveyor, travis or fallback ci.",
+    )
+
 
 @tox.hookimpl(trylast=True)
 def tox_configure(config):
@@ -80,6 +88,12 @@ def tox_configure(config):
             config.option.prepend_factor = [_get_os_type().lower()]
         else:
             config.option.prepend_factor.insert(0, _get_os_type().lower())
+
+    if config.option.add_ci_factor and "CI" in os.environ:
+        if "APPVEYOR" in os.environ or "TRAVIS" in os.environ:
+            config.option.prepend_username_factor = True
+        else:
+            config.option.append_factor.insert(0, "ci")
 
     if config.option.prepend_username_factor:
         import getpass  # noqa
