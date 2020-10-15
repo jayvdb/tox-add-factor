@@ -1,8 +1,5 @@
 """Tox envlist manipulation."""
 import os
-import re
-import sys
-from itertools import product
 
 try:
     from tox.reporter import warning
@@ -10,7 +7,7 @@ except ImportError:
     warning = lambda s: None
 
 from tox.config import _split_env as split_env
-from tox.config import ParseIni, SectionReader, TestenvConfig, testenvprefix
+from tox.config import ParseIni, SectionReader, testenvprefix
 
 BEFORE = 1
 AFTER = 2
