@@ -7,7 +7,22 @@ Any factor can be added with `--prepend-factor` and `--append-factor`.
 The added factors can be combined with the `-e` argument and
 `TOXENV` environment variable.
 
+## CI factors
+
+The argument `add-ci-factor` will detect the CI from the list below and add
+it as a factor or fallback to adding "ci":
+
+- appveyor
+- cirrusci
+- travis
+
+To always add a "ci" factor, use `--append-factor=ci`.
+
+Many CI services use a username which are the name of the service name.
+For those services, the `--prepend-username-factor` may be helpful.
+
 ## Platform factors
+
 Three specific factors can be added to simplify selecting OS and arch:
 The following example depends on `--prepend-ostype-factor`
 
@@ -29,7 +44,8 @@ is ever fixed.
 The factors `--prepend-cpuarch-factor` and `--prepend-archraw-factor`
 are provided by https://github.com/workhorsy/py-cpuinfo .
 
-The cpuarch factor currently only supports
+The cpuarch factor currently only supports:
+
 - x86_32
 - x86_64
 - arm_7

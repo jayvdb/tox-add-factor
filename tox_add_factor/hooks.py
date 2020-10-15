@@ -1,7 +1,8 @@
 """Tox hook implementations."""
 from __future__ import print_function
+
 import os
-import sys
+
 import tox
 
 try:
@@ -37,6 +38,18 @@ def tox_addoption(parser):
         "--prepend-ostype-factor",
         action="store_true",
         help="Prepend OS type to factors, such as linux, macos, windows.",
+    )
+
+    parser.add_argument(
+        "--prepend-username-factor",
+        action="store_true",
+        help="Prepend username to factors.",
+    )
+
+    parser.add_argument(
+        "--add-ci-factor",
+        action="store_true",
+        help="Add CI factors if environment variable is set, such as appveyor, travis or fallback ci.",
     )
 
 
@@ -75,6 +88,33 @@ def tox_configure(config):
             config.option.prepend_factor = [_get_os_type().lower()]
         else:
             config.option.prepend_factor.insert(0, _get_os_type().lower())
+
+    if config.option.add_ci_factor and "CI" in os.environ:
+        extra_factor = None
+        if "APPVEYOR" in os.environ or "TRAVIS" in os.environ:
+            config.option.prepend_username_factor = True
+        elif "CIRRUS_CI" in os.environ:
+            extra_factor = "cirrusci"
+        else:
+            extra_factor = "ci"
+
+        if extra_factor:
+            if not config.option.append_factor:
+                config.option.append_factor = [extra_factor]
+            else:
+                config.option.append_factor.insert(0, extra_factor)
+
+    if config.option.prepend_username_factor:
+        import getpass  # noqa
+
+        username = getpass.getuser()
+        if username:
+            username = username.lower()
+
+        if not config.option.prepend_factor:
+            config.option.prepend_factor = [username]
+        else:
+            config.option.prepend_factor.insert(0, username)
 
     if config.option.prepend_factor:
         add_factors(config, config.option.prepend_factor, position=BEFORE)
