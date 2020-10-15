@@ -1,7 +1,6 @@
 """Tox hook implementations."""
 from __future__ import print_function
-import os
-import sys
+
 import tox
 
 try:
