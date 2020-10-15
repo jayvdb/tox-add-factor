@@ -90,15 +90,23 @@ def tox_configure(config):
             config.option.prepend_factor.insert(0, _get_os_type().lower())
 
     if config.option.add_ci_factor and "CI" in os.environ:
+        extra_factor = None
         if "APPVEYOR" in os.environ or "TRAVIS" in os.environ:
             config.option.prepend_username_factor = True
-        elif not config.option.append_factor:
-            config.option.append_factor = ["ci"]
+        elif "CIRRUS_CI" in os.environ:
+            extra_factor = "cirrusci"
         else:
-            config.option.append_factor.insert(0, "ci")
+            extra_factor = "ci"
+
+        if extra_factor:
+            if not config.option.append_factor:
+                config.option.append_factor = [extra_factor]
+            else:
+                config.option.append_factor.insert(0, extra_factor)
 
     if config.option.prepend_username_factor:
         import getpass  # noqa
+
         username = getpass.getuser()
         if username:
             username = username.lower()
