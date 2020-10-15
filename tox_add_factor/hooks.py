@@ -92,6 +92,8 @@ def tox_configure(config):
     if config.option.add_ci_factor and "CI" in os.environ:
         if "APPVEYOR" in os.environ or "TRAVIS" in os.environ:
             config.option.prepend_username_factor = True
+        elif not config.option.append_factor:
+            config.option.append_factor = ["ci"]
         else:
             config.option.append_factor.insert(0, "ci")
 
