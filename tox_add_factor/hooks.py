@@ -40,7 +40,7 @@ def tox_addoption(parser):
     )
 
 
-@tox.hookimpl
+@tox.hookimpl(trylast=True)
 def tox_configure(config):
     """Check for the presence of the added options."""
     if config.option.prepend_archraw_factor:
